@@ -59,10 +59,21 @@ def add(title: str):
 
 
 @app.command()
-def list():
+def list(status: Optional[str] = None):
     """List all tasks."""
-    todos = todo.list_todos()
-    table = Table(title="Task List")
+    if status is not None:
+        if status.lower() not in ["completed", "pending"]:
+            console.print(
+                "Invalid status use 'completed' or 'pending'.", style="bold red"
+            )
+            return
+    todos = todo.list_todos(status=status)
+    if len(todos) < 1:
+        console.print("Task List is Empty", style="bold red")
+        return
+    table = Table(
+        title="Task List",
+    )
 
     table.add_column("ID", justify="right", style="cyan", no_wrap=True)
     table.add_column("Title", style="magenta")
@@ -114,7 +125,6 @@ def complete(id: int):
 def update(id: int, title: str, is_completed: bool = False):
     """Update a task's title and completion status."""
     task = todo.update_todo(id, title, is_completed)
-    task = todo.mark_complete(id)
     if task is not None:
         table = create_task_table(task, "Task Marked As Completed")
         console.print(table)

@@ -30,8 +30,8 @@ class TodoList:
             self.db.update_todo(id=id, title=title, is_completed=is_completed)
             return todo
 
-    def list_todos(self):
-        todos = self.db.get_all_tasks()
+    def list_todos(self, status):
+        todos = self.db.get_all_tasks(status=status)
         return todos
 
     def mark_complete(self, id):

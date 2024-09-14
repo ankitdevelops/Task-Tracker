@@ -61,8 +61,17 @@ class Database:
         )
         return self.cursor.fetchone()
 
-    def get_all_tasks(self):
-        select_all_tasks_sql = "SELECT * FROM tasks;"
+    def get_all_tasks(self, status):
+        if status is None:
+            select_all_tasks_sql = "SELECT * FROM tasks ORDER BY updated_at DESC;"
+        elif status.lower() == "completed":
+            select_all_tasks_sql = (
+                "SELECT * FROM tasks WHERE is_completed = 1 ORDER BY updated_at DESC;"
+            )
+        elif status.lower() == "pending":
+            select_all_tasks_sql = (
+                "SELECT * FROM tasks WHERE is_completed = 0 ORDER BY updated_at DESC;"
+            )
         self.cursor.execute(select_all_tasks_sql)
         return self.cursor.fetchall()
 
